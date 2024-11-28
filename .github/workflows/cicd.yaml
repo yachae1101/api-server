@@ -3,8 +3,12 @@ on:
   push:
     branches: ["main"]
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
-  build-docker-image:
+  cicd:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -22,3 +26,10 @@ jobs:
         uses: gradle/gradle-build-action@v2.6.0
         with:
           arguments: build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::788359277408:role/api-server-push-role
+          role-session-name: sampleSessionName
+          aws-region: ap-northeast-2
